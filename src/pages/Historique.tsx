@@ -1,6 +1,6 @@
 import  { useState } from 'react';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import { Input } from '../components/ui/input';
+import { Button } from '../components/ui/button';
 import {
     Table,
     TableBody,
@@ -8,7 +8,7 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from '@/components/ui/table';
+} from '../components/ui/table';
 
 // Données météo simulées
 const weatherData = [
@@ -114,7 +114,7 @@ export default function HistoriqueMeteo() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 p-8">
+        <div className="min-h-screen  p-8">
             <div className="max-w-7xl mx-auto">
                 {/* En-tête */}
                 <h1 className="text-3xl font-bold mb-8">Historique des Données</h1>
@@ -141,7 +141,7 @@ export default function HistoriqueMeteo() {
                 </div>
 
                 {/* Tableau */}
-                <div className="bg-white rounded-lg shadow">
+                <div className="bg-white/75  mx-auto px-20 rounded-lg shadow">
                     <Table>
                         <TableHeader>
                             <TableRow>
