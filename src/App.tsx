@@ -3,6 +3,7 @@ import Home from './pages/Home';
 import Navbar from "./components/Navbar.tsx";
 import AnimatedBackground from "./components/AnimatedBackground";
 import Historique from "./pages/Historique.tsx";
+import Stats from "./pages/Stats.tsx";
 
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
                     <Routes>
                         <Route path="/" element={<Home/>}/>
                         <Route path="/historique" element={<Historique/>}/>
+                        <Route path="/rapports" element={<Stats/>}/>
                     </Routes>
                 </Router>
             </div>
