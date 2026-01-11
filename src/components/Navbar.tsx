@@ -39,7 +39,7 @@ const Navbar = () => {
 
             <div
                 className="absolute right-10 top-1/2 -translate-y-1/2 flex items-center gap-3 bg-gray-100 px-4 py-2 rounded-full shadow-inner">
-                <Clock size={18} className="text-blue-600 animate-pulse"/>
+                <Clock size={18} className="text-black animate-pulse"/>
                 <span className="font-mono font-bold text-lg tracking-widest text-gray-800">
                     {formattedTime}
                 </span>

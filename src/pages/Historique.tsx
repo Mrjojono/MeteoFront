@@ -1,211 +1,113 @@
-import  { useState } from 'react';
-import { Input } from '../components/ui/input';
-import { Button } from '../components/ui/button';
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from '../components/ui/table';
-
-// Données météo simulées
-const weatherData = [
-    {
-        date: '12/10/2023',
-        heure: '14:00',
-        temperature: '15.5°C',
-        humidite: '55%',
-        pression: '1012 hPa',
-        vent_vitesse: '10 km/h',
-        vent_direction: 'NE'
-    },
-    {
-        date: '12/10/2023',
-        heure: '13:00',
-        temperature: '15.2°C',
-        humidite: '58%',
-        pression: '1012 hPa',
-        vent_vitesse: '12 km/h',
-        vent_direction: 'NE'
-    },
-    {
-        date: '12/10/2023',
-        heure: '14:00',
-        temperature: '15.5°C',
-        humidite: '54%',
-        pression: '1012 hPa',
-        vent_vitesse: '12 km/h',
-        vent_direction: 'NE'
-    },
-    {
-        date: '12/10/2023',
-        heure: '13:00',
-        temperature: '14.8°C',
-        humidite: '67%',
-        pression: '1012 hPa',
-        vent_vitesse: '10 km/h',
-        vent_direction: 'NE'
-    },
-    {
-        date: '12/10/2023',
-        heure: '13:00',
-        temperature: '14.8°C',
-        humidite: '67%',
-        pression: '1012 hPa',
-        vent_vitesse: '12 km/h',
-        vent_direction: 'NE'
-    },
-    {
-        date: '12/10/2023',
-        heure: '14:00',
-        temperature: '14.3°C',
-        humidite: '53%',
-        pression: '1012 hPa',
-        vent_vitesse: '12 km/h',
-        vent_direction: 'NE'
-    },
-    {
-        date: '12/10/2023',
-        heure: '14:00',
-        temperature: '14.3°C',
-        humidite: '53%',
-        pression: '1012 hPa',
-        vent_vitesse: '12 km/h',
-        vent_direction: 'NE'
-    },
-    {
-        date: '12/10/2023',
-        heure: '14:00',
-        temperature: '14.5°C',
-        humidite: '58%',
-        pression: '1012 hPa',
-        vent_vitesse: '12 km/h',
-        vent_direction: 'NE'
-    },
-    {
-        date: '11/10/2023',
-        heure: '15:00',
-        temperature: '16.2°C',
-        humidite: '52%',
-        pression: '1013 hPa',
-        vent_vitesse: '8 km/h',
-        vent_direction: 'E'
-    },
-    {
-        date: '11/10/2023',
-        heure: '16:00',
-        temperature: '17.1°C',
-        humidite: '48%',
-        pression: '1013 hPa',
-        vent_vitesse: '11 km/h',
-        vent_direction: 'SE'
-    }
-];
+import {useState, useEffect} from 'react';
+import {Input} from '../components/ui/input';
+import {Button} from '../components/ui/button';
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from '../components/ui/table';
 
 export default function HistoriqueMeteo() {
+    const [data, setData] = useState<any[]>([]);
     const [dateDebut, setDateDebut] = useState('');
     const [dateFin, setDateFin] = useState('');
+    const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
 
-    const handleFilter = () => {
-        console.log('Filtrer avec:', { dateDebut, dateFin });
+    const fetchHistory = async () => {
+        setLoading(true);
+        try {
+            let url = `http://localhost:8000/api/weather/history?limit=200`;
+            if (dateDebut && dateFin) {
+                url += `&start_date=${dateDebut}T00:00:00&end_date=${dateFin}T23:59:59`;
+            }
+
+            const response = await fetch(url);
+            const result = await response.json();
+
+
+            if (Array.isArray(result)) {
+                setData(result);
+            } else {
+                setData([]);
+            }
+        } catch (error) {
+            console.error("Erreur Fetch:", error);
+        } finally {
+            setLoading(false);
+        }
     };
 
-    return (
-        <div className="min-h-screen  p-8">
-            <div className="max-w-7xl mx-auto">
-                {/* En-tête */}
-                <h1 className="text-3xl font-bold mb-8">Historique des Données</h1>
+    useEffect(() => {
+        fetchHistory();
+    }, []);
 
-                {/* Filtres */}
-                <div className="flex gap-4 mb-8">
-                    <Input
-                        type="text"
-                        placeholder="Date Début"
-                        value={dateDebut}
-                        onChange={(e) => setDateDebut(e.target.value)}
-                        className="w-64"
-                    />
-                    <Input
-                        type="text"
-                        placeholder="Date Fin"
-                        value={dateFin}
-                        onChange={(e) => setDateFin(e.target.value)}
-                        className="w-64"
-                    />
-                    <Button onClick={handleFilter} className="bg-black hover:bg-gray-800">
-                        Filtrer
+    // Pagination
+    const totalPages = Math.ceil(data.length / itemsPerPage);
+    const currentItems = data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+    return (
+        <div className="min-h-screen p-8 bg-transparent">
+            <div className="max-w-7xl mx-auto">
+                <h1 className="text-3xl font-bold mb-8">Historique (Base 2025)</h1>
+
+                <div className="flex gap-4 mb-8 items-end">
+                    <div className="flex flex-col gap-2">
+                        <span className="text-sm font-medium">Du:</span>
+                        <Input type="date" value={dateDebut} onChange={(e) => setDateDebut(e.target.value)}
+                               className="w-64"/>
+                    </div>
+                    <div className="flex flex-col gap-2">
+                        <span className="text-sm font-medium">Au:</span>
+                        <Input type="date" value={dateFin} onChange={(e) => setDateFin(e.target.value)}
+                               className="w-64"/>
+                    </div>
+                    <Button onClick={fetchHistory} className="bg-black text-white px-8 h-10">
+                        {loading ? 'Chargement...' : 'Filtrer'}
                     </Button>
                 </div>
 
-                {/* Tableau */}
-                <div className="bg-white/75  mx-auto px-20 rounded-lg shadow">
+                <div className="bg-white rounded-xl shadow-lg border overflow-hidden">
                     <Table>
                         <TableHeader>
-                            <TableRow>
-                                <TableHead>Date</TableHead>
-                                <TableHead>Heure</TableHead>
-                                <TableHead>Temp.</TableHead>
-                                <TableHead>Humidité</TableHead>
-                                <TableHead>Pression</TableHead>
-                                <TableHead>Vent (Vitesse)</TableHead>
-                                <TableHead>Vent (Direction)</TableHead>
+                            <TableRow className="bg-gray-50">
+                                <TableHead>Date / Heure</TableHead>
+                                <TableHead>Temp. (°C)</TableHead>
+                                <TableHead>Humidité (%)</TableHead>
+                                <TableHead>Pression (hPa)</TableHead>
+                                <TableHead>Vent (km/h)</TableHead>
+                                <TableHead>Nuages (%)</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {weatherData.map((row, index) => (
+                            {currentItems.map((row, index) => (
                                 <TableRow key={index}>
-                                    <TableCell className="font-medium">{row.date}</TableCell>
-                                    <TableCell>{row.heure}</TableCell>
-                                    <TableCell>{row.temperature}</TableCell>
-                                    <TableCell>{row.humidite}</TableCell>
-                                    <TableCell>{row.pression}</TableCell>
-                                    <TableCell>{row.vent_vitesse}</TableCell>
-                                    <TableCell>{row.vent_direction}</TableCell>
+                                    <TableCell className="font-medium">
+                                        {row.time.replace('T', ' ')}
+                                    </TableCell>
+                                    <TableCell className="font-bold">{row["temperature_2m (°C)"]}°</TableCell>
+                                    <TableCell>{row["relative_humidity_2m (%)"]}%</TableCell>
+                                    <TableCell>{row["pressure_msl (hPa)"]}</TableCell>
+                                    <TableCell>{row["wind_speed_10m (km/h)"]}</TableCell>
+                                    <TableCell>{row["cloud_cover (%)"]}%</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
                     </Table>
                 </div>
 
-                {/* Pagination */}
+                {/* Pagination Simple */}
                 <div className="flex justify-center gap-2 mt-8">
                     <Button
-                        variant={currentPage === 1 ? "default" : "outline"}
-                        size="icon"
-                        className={currentPage === 1 ? "bg-black hover:bg-gray-800" : ""}
-                        onClick={() => setCurrentPage(1)}
-                    >
-                        1
-                    </Button>
+                        variant="outline"
+                        disabled={currentPage === 1}
+                        onClick={() => setCurrentPage(p => p - 1)}
+                    > Précédent </Button>
+                    <span className="flex items-center px-4 font-bold">
+                        Page {currentPage} sur {totalPages || 1}
+                    </span>
                     <Button
-                        variant={currentPage === 2 ? "default" : "outline"}
-                        size="icon"
-                        className={currentPage === 2 ? "bg-black hover:bg-gray-800" : ""}
-                        onClick={() => setCurrentPage(2)}
-                    >
-                        2
-                    </Button>
-                    <Button
-                        variant={currentPage === 3 ? "default" : "outline"}
-                        size="icon"
-                        className={currentPage === 3 ? "bg-black hover:bg-gray-800" : ""}
-                        onClick={() => setCurrentPage(3)}
-                    >
-                        3
-                    </Button>
-                    <span className="flex items-center px-2">...</span>
-                    <Button variant="outline" size="icon" onClick={() => setCurrentPage(10)}>
-                        10
-                    </Button>
-                    <Button variant="outline" size="icon" disabled={currentPage === 1}>
-                        &lt;
-                    </Button>
-                    <Button variant="outline" size="icon" disabled={currentPage === 10}>
-                        &gt;
-                    </Button>
+                        variant="outline"
+                        disabled={currentPage === totalPages}
+                        onClick={() => setCurrentPage(p => p + 1)}
+                    > Suivant </Button>
                 </div>
             </div>
         </div>
