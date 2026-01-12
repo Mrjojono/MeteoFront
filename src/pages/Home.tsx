@@ -54,10 +54,14 @@ const Home = () => {
                 </div>
 
                 <div className="flex flex-row">
+
+                    {/*
                     <div className="flex flex-row items-center">
                         <MapPin size={20} className="text-black mr-2"/>
                         <span className="text-xl font-medium text-black">Paris, France</span>
                     </div>
+                    */}
+
                 </div>
             </div>
 
