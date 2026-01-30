@@ -82,15 +82,15 @@ const Home = () => {
                     {/* Humidité */}
                     <DataCard
                         label="Humidité"
-                        value={`${weather["relative_humidity_2m (%)"]}%`}
-                        trend={getTrend(weather["relative_humidity_2m (%)"], prevWeather?.["relative_humidity_2m (%)"])}
+                        value={`${weather["relative_humidity_2m"]}%`}
+                        trend={getTrend(weather["relative_humidity_2m"], prevWeather?.["relative_humidity_2m"])}
                     />
 
                     {/* Vent */}
                     <DataCard
                         label="Vent"
-                        value={`${weather["wind_speed_10m (km/h)"]} km/h`}
-                        trend={getTrend(weather["wind_speed_10m (km/h)"], prevWeather?.["wind_speed_10m (km/h)"])}
+                        value={`${weather["wind_speed_10m"]} km/h`}
+                        trend={getTrend(weather["wind_speed_10m"], prevWeather?.["wind_speed_10m"])}
                     />
 
                     {/* Pression */}
@@ -107,12 +107,14 @@ const Home = () => {
                         trend={getTrend(weather["precipitation (mm)"], prevWeather?.["precipitation (mm)"])}
                     />
 
-                    {/* Indice Nuageux (au lieu de UV car tu as cloud_cover) */}
-                    <DataCard
+                    {/* Indice Nuageux (au lieu de UV car tu as cloud_cover)
+                      <DataCard
                         label="Nuages"
                         value={`${weather["cloud_cover (%)"]}%`}
                         trend={getTrend(weather["cloud_cover (%)"], prevWeather?.["cloud_cover (%)"])}
                     />
+                     */}
+
                 </div>
             </div>
         </div>

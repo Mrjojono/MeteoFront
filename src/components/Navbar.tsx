@@ -1,5 +1,5 @@
 import {NavLink} from 'react-router-dom';
-import {BarChart3, History, LayoutDashboard, FileText, Clock} from 'lucide-react';
+import {BarChart3, History, LayoutDashboard, Clock, MapPin} from 'lucide-react';
 import {useState, useEffect} from 'react';
 
 const Navbar = () => {
@@ -21,11 +21,14 @@ const Navbar = () => {
 
     const linkStyle = "text-xl transition-all duration-300 pb-1 flex items-center gap-2";
 
+    {/* Liste de navigation
+      {to: "/graphiques", label: "Graphiques", icon: <BarChart3 size={20}/>},
+        {to: "/historique", label: "Historique", icon: <History size={20}/>},
+    */}
     const navList = [
         {to: "/", label: "Dashboard", icon: <LayoutDashboard size={20}/>},
-        {to: "/graphiques", label: "Graphiques", icon: <BarChart3 size={20}/>},
-        {to: "/historique", label: "Historique", icon: <History size={20}/>},
-        {to: "/rapports", label: "Rapports", icon: <FileText size={20}/>},
+
+        {to: "/map", label: "Terrain", icon: <MapPin size={20}/>},
     ];
 
     const getActiveClass = ({isActive}: { isActive: boolean }) =>
