@@ -1,9 +1,4 @@
-/* src/workers/terrainWorker.js
-   Corrections:
-   - calcul climatique réalisé avant branche eau/terre (temperature/humidity/precipitation toujours définies)
-   - utilisation algorithmParams.precipitationScale pour piloter les précipitations côté UI
-   - gestion d'erreurs envoyée au thread principal
-*/
+
 import { createNoise2D } from 'simplex-noise';
 import { GeoCoordinates } from '../utils/coordinates';
 import {

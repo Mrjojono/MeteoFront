@@ -1,12 +1,6 @@
 import React from 'react';
 import { useTerrainGenerator } from '../hooks/useTerrainGenerator';
 
-/**
- * Tailwind-adapted TerrainCanvas (remplace l'ancien CSS)
- * - Ne modifie pas la logique : useTerrainGenerator reste utilisé tel quel
- * - Remplace les styles CSS par des classes Tailwind proches du rendu original
- * - Aucune "modification bizarre" : structure HTML identique
- */
 
 const BiomeLegend = ({ biomes }) => {
     if (!Array.isArray(biomes)) return null;

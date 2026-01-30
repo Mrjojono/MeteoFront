@@ -12,7 +12,7 @@
         RefreshCw
     } from 'lucide-react';
 
-    /* Small wrapper moved outside to avoid creating a component during render */
+
     const Control = ({ children }) => <div className="mb-4 last:mb-0">{children}</div>;
 
     /**
