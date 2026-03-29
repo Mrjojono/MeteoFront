@@ -5,7 +5,7 @@
 ![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
 ![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
 
-## 📌 Présentation du Projet
+##  Présentation du Projet
 
 **SkyNode** est une solution complète de monitoring météorologique conçue pour l'écosystème Big Data. Le projet intègre une chaîne IoT complète, de l'acquisition des données (capteurs physiques ou sources satellitaires NASA) jusqu'à leur visualisation dynamique sur un dashboard haute performance.
 
@@ -13,7 +13,7 @@ Ce système répond aux enjeux de scalabilité et de traitement en temps réel d
 
 ---
 
-## 🏗️ Architecture du Système
+##  Architecture du Système
 
 Le projet repose sur une architecture en 4 couches :
 
@@ -24,13 +24,13 @@ Le projet repose sur une architecture en 4 couches :
 
 ---
 
-## ✨ Fonctionnalités Clés
+##  Fonctionnalités Clés
 
--   **📡 Monitoring Temps Réel** : Visualisation instantanée des flux de données entrants.
--   **📊 Analyse Historique** : Consultation de données sur de longues périodes pour identifier des cycles météo.
--   **🌍 Géolocalisation** : Chaque mesure est indexée par date, heure et coordonnées géographiques.
--   **🚀 Dashboard Haute Performance** : Interface fluide développée avec Vite + React + TypeScript.
--   **💡 Cas d'Usages Intégrés** : Préréglages pour l'Agriculture, l'Énergie (solaire/éolien) et les infrastructures scolaires.
+-   ** Monitoring Temps Réel** : Visualisation instantanée des flux de données entrants.
+-   ** Analyse Historique** : Consultation de données sur de longues périodes pour identifier des cycles météo.
+-   ** Géolocalisation** : Chaque mesure est indexée par date, heure et coordonnées géographiques.
+-   ** Dashboard Haute Performance** : Interface fluide développée avec Vite + React + TypeScript.
+-   ** Cas d'Usages Intégrés** : Préréglages pour l'Agriculture, l'Énergie (solaire/éolien) et les infrastructures scolaires.
 
 ---
 
@@ -44,7 +44,7 @@ Le projet repose sur une architecture en 4 couches :
 
 ---
 
-## 🚀 Installation et Lancement
+##  Installation et Lancement
 
 ### Prérequis
 - [Node.js](https://nodejs.org/) (version 18 ou supérieure)
@@ -69,7 +69,7 @@ Le projet repose sur une architecture en 4 couches :
 
 ---
 
-## 📈 Cas d'Usage (Business Intelligence)
+##  Cas d'Usage (Business Intelligence)
 
 | Secteur | Application |
 | :--- | :--- |
@@ -78,12 +78,6 @@ Le projet repose sur une architecture en 4 couches :
 | **Éducation** | Support pédagogique pour l'étude des changements climatiques en milieu scolaire. |
 
 ---
-
-## 👨‍💻 L'Équipe (Groupe Big Data)
-*   **Membre 1** : [Nom/Prénom] - Architecture IoT
-*   **Membre 2** : [Nom/Prénom] - Traitement Big Data
-*   **Membre 3** : [Nom/Prénom] - Développement Dashboard
-*   **Membre 4** : [Nom/Prénom] - Analyse de Données
 
 ---
 *Ce projet a été réalisé dans le cadre du module Big Data.*
