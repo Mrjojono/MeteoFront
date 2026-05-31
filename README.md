@@ -7,7 +7,7 @@
 
 ##  Présentation du Projet
 
-**SkyNode** est une solution complète de monitoring météorologique conçue pour l'écosystème Big Data. Le projet intègre une chaîne IoT complète, de l'acquisition des données (capteurs physiques ou sources satellitaires NASA) jusqu'à leur visualisation dynamique sur un dashboard haute performance.
+il s'agit d'une solution complète de monitoring météorologique conçue pour l'écosystème Big Data. Le projet intègre une chaîne IoT complète, de l'acquisition des données (capteurs physiques ou sources satellitaires NASA) jusqu'à leur visualisation dynamique sur un dashboard haute performance.
 
 Ce système répond aux enjeux de scalabilité et de traitement en temps réel des données environnementales pour des secteurs clés comme l'agriculture de précision, la gestion énergétique et l'éducation.
 
@@ -34,7 +34,7 @@ Le projet repose sur une architecture en 4 couches :
 
 ---
 
-## 🛠️ Stack Technique
+##  Stack Technique
 
 -   **Frontend** : React 18, TypeScript, Tailwind CSS.
 -   **Build Tool** : Vite (HMR activé).
