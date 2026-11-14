@@ -107,7 +107,7 @@ export default function Dashboard() {
 
   return (
     <div className="h-screen overflow-hidden bg-[#154a7a] p-3 text-slate-900">
-      <div className="flex h-full overflow-hidden rounded-[28px] bg-[#154a7a] shadow-xl">
+      <div className="flex h-full overflow-hidden rounded-xl bg-[#154a7a] shadow-xl">
         <DashboardSidebar
           locationId={locationId}
           viewMode={viewMode}
@@ -120,8 +120,8 @@ export default function Dashboard() {
           onDownload={handleDownload}
         />
 
-        <main className="relative ml-2 flex min-w-0 flex-1 flex-col overflow-hidden rounded-[28px] bg-white">
-          <header className="pointer-events-none absolute inset-x-3 top-3 z-[1200] flex items-center justify-end rounded-2xl bg-white/55 px-4 py-2.5 shadow-sm backdrop-blur-md">
+        <main className="relative ml-2 flex min-w-0 flex-1 flex-col overflow-hidden rounded-xl bg-white">
+          <header className="pointer-events-none absolute inset-x-3 top-3 z-[1200] flex items-center justify-end rounded-xl bg-white/55 px-4 py-2.5 shadow-sm backdrop-blur-md">
             <div className="pointer-events-auto">
               <DashboardTabs screen={screen} onChange={setScreen} />
             </div>
