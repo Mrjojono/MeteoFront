@@ -1,0 +1,85 @@
+export type LayerId =
+  | "rain_mm"
+  | "anomaly_mm"
+  | "anomaly_pct"
+  | "anomaly_z"
+  | "prob_above_normal";
+
+export type ViewMode = "observation" | "forecast" | "total";
+
+export type DashboardScreen = "map" | "series" | "signals" | "metrics" | "limits";
+
+export type LocationId = "world" | "dakar" | "niamey" | "ouagadougou";
+
+export type PaletteStop = {
+  value: number;
+  color: string;
+};
+
+export type LayerMeta = {
+  id: string;
+  label: string;
+  unit: string;
+  range: { min: number; max: number };
+  precision: number;
+  palette: { kind: string; stops: PaletteStop[] };
+  legend: { ticks: number[]; labels?: string[] };
+  scope: string[];
+  available: boolean;
+};
+
+export type GridSpec = {
+  nx: number;
+  ny: number;
+  resolution: number;
+  lon: { start: number; step: number; count: number };
+  lat: { start: number; step: number; count: number };
+  layout: string;
+};
+
+export type FramePayload = {
+  layer: LayerId;
+  unit: string;
+  grid: GridSpec;
+  frames: { time: string; values: (number | null)[] }[];
+};
+
+export type ForecastPayload = {
+  issued_at: string;
+  target: string;
+  lead_months: number;
+  grid: GridSpec;
+  layers: Record<
+    string,
+    { values: (number | null)[]; p10?: (number | null)[]; p90?: (number | null)[] }
+  >;
+  summary: {
+    region_mean_mm: number;
+    region_clim_mm: number;
+    region_anomaly_pct: number;
+    prob_wetter_than_normal: number;
+    area_wetter_pct: number;
+    area_drier_pct: number;
+  };
+  model: { id: string; label: string };
+  baseline: { id: string; label: string; rmse: number };
+};
+
+export type PointSeriesRow = {
+  time: string;
+  kind: "observation" | "forecast";
+  rain_mm: number | null;
+  clim_mm: number | null;
+  anomaly_mm: number | null;
+  anomaly_z: number | null;
+  forecast_mm: number | null;
+  forecast_p10: number | null;
+  forecast_p90: number | null;
+};
+
+export type PointPayload = {
+  label: string;
+  cell: { lat: number; lon: number };
+  unit: string;
+  series: PointSeriesRow[];
+};

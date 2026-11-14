@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
     LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
     AreaChart, Area, PieChart, Pie, Cell, Legend,
@@ -170,7 +170,7 @@ const Graphique = () => {
                                 <PieChart>
                                     <Pie data={pieData} innerRadius={60} outerRadius={85} paddingAngle={8}
                                          dataKey="value" isAnimationActive={false}>
-                                        {pieData.map((entry, index) => (
+                                        {pieData.map((_, index) => (
                                             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                         ))}
                                     </Pie>
