@@ -1,0 +1,154 @@
+{
+  "resource": "alerts",
+  "contract_version": "1.0.0",
+  "time": "1985-06-01",
+  "severity": {
+    "level": "moderate",
+    "label": "Modéré",
+    "score": 0.54
+  },
+  "indicators": {
+    "rain_mean_mm": 74.2,
+    "clim_mean_mm": 80.6,
+    "anomaly_pct": -24.3,
+    "anomaly_z_mean": -0.38,
+    "area_below_normal_pct": 71.9,
+    "area_deficit_severe_pct": 34.1
+  },
+  "classes": [
+    {
+      "id": "deficit_severe",
+      "label": "Déficit sévère",
+      "count": 1184,
+      "area_pct": 34.1,
+      "color": "#8c510a"
+    },
+    {
+      "id": "deficit",
+      "label": "Déficit",
+      "count": 679,
+      "area_pct": 19.6,
+      "color": "#d8b365"
+    },
+    {
+      "id": "normal",
+      "label": "Normal",
+      "count": 1057,
+      "area_pct": 30.5,
+      "color": "#e8e8e8"
+    },
+    {
+      "id": "excedent",
+      "label": "Excédent",
+      "count": 266,
+      "area_pct": 7.7,
+      "color": "#5ab4ac"
+    },
+    {
+      "id": "excedent_fort",
+      "label": "Excédent fort",
+      "count": 282,
+      "area_pct": 8.1,
+      "color": "#01665e"
+    }
+  ],
+  "top_cells": [
+    {
+      "lat": 10.25,
+      "lon": -13.75,
+      "anomaly_pct": 25.0,
+      "anomaly_z": 18.22,
+      "level": "moderate"
+    },
+    {
+      "lat": 8.75,
+      "lon": -11.25,
+      "anomaly_pct": -46.6,
+      "anomaly_z": -15.38,
+      "level": "moderate"
+    },
+    {
+      "lat": 7.25,
+      "lon": 9.75,
+      "anomaly_pct": 50.0,
+      "anomaly_z": 12.89,
+      "level": "moderate"
+    },
+    {
+      "lat": 12.75,
+      "lon": 3.25,
+      "anomaly_pct": -29.0,
+      "anomaly_z": -11.9,
+      "level": "moderate"
+    },
+    {
+      "lat": 23.75,
+      "lon": -0.75,
+      "anomaly_pct": -100.0,
+      "anomaly_z": -11.43,
+      "level": "moderate"
+    }
+  ],
+  "history": [
+    {
+      "time": "1984-07-01",
+      "anomaly_pct": 1.6,
+      "level": "none"
+    },
+    {
+      "time": "1984-08-01",
+      "anomaly_pct": -15.1,
+      "level": "moderate"
+    },
+    {
+      "time": "1984-09-01",
+      "anomaly_pct": 48.6,
+      "level": "extreme"
+    },
+    {
+      "time": "1984-10-01",
+      "anomaly_pct": 51.8,
+      "level": "extreme"
+    },
+    {
+      "time": "1984-11-01",
+      "anomaly_pct": 70.5,
+      "level": "extreme"
+    },
+    {
+      "time": "1984-12-01",
+      "anomaly_pct": 29.1,
+      "level": "high"
+    },
+    {
+      "time": "1985-01-01",
+      "anomaly_pct": 1479.9,
+      "level": "extreme"
+    },
+    {
+      "time": "1985-02-01",
+      "anomaly_pct": -65.8,
+      "level": "extreme"
+    },
+    {
+      "time": "1985-03-01",
+      "anomaly_pct": 49.9,
+      "level": "extreme"
+    },
+    {
+      "time": "1985-04-01",
+      "anomaly_pct": 592.3,
+      "level": "extreme"
+    },
+    {
+      "time": "1985-05-01",
+      "anomaly_pct": 237.0,
+      "level": "extreme"
+    },
+    {
+      "time": "1985-06-01",
+      "anomaly_pct": -24.3,
+      "level": "moderate"
+    }
+  ]
+}

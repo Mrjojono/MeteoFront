@@ -14,7 +14,8 @@ export default function HistoriqueMeteo() {
     const fetchHistory = async () => {
         setLoading(true);
         try {
-            let url = `http://localhost:8000/api/weather/history?limit=200`;
+            // let url = `http://localhost:8000/api/weather/history?limit=200`;
+            let url = `api/meta`;
             if (dateDebut && dateFin) {
                 url += `&start_date=${dateDebut}T00:00:00&end_date=${dateFin}T23:59:59`;
             }

@@ -1,5 +1,19 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "leaflet/dist/leaflet.css";
+
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+  background: #d7ecef;
+  z-index: 0;
+  font-family: inherit;
+}
+
+.rain-grid-overlay {
+  image-rendering: auto;
+  pointer-events: none;
+}
 
 @custom-variant dark (&:is(.dark *));
 

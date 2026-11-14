@@ -1,0 +1,73 @@
+{
+  "contract_version": "1.0.0",
+  "generated_at": "2026-11-14T13:01:51Z",
+  "schema": "../schema.json",
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/api/meta",
+      "resource": "meta",
+      "file": "meta.json"
+    },
+    {
+      "method": "GET",
+      "path": "/api/frames?layer=rain_mm",
+      "resource": "frames",
+      "file": "frames_rain_mm.json"
+    },
+    {
+      "method": "GET",
+      "path": "/api/frames?layer=anomaly_mm",
+      "resource": "frames",
+      "file": "frames_anomaly_mm.json"
+    },
+    {
+      "method": "GET",
+      "path": "/api/frames?layer=anomaly_pct",
+      "resource": "frames",
+      "file": "frames_anomaly_pct.json"
+    },
+    {
+      "method": "GET",
+      "path": "/api/frames?layer=anomaly_z",
+      "resource": "frames",
+      "file": "frames_anomaly_z.json"
+    },
+    {
+      "method": "GET",
+      "path": "/api/forecast?lead=1",
+      "resource": "forecast",
+      "file": "forecast_lead1.json"
+    },
+    {
+      "method": "GET",
+      "path": "/api/forecast?lead=3",
+      "resource": "forecast",
+      "file": "forecast_lead3.json"
+    },
+    {
+      "method": "GET",
+      "path": "/api/point?lat=13.5&lon=2.1",
+      "resource": "point",
+      "file": "point_niamey.json"
+    },
+    {
+      "method": "GET",
+      "path": "/api/point?lat=12.4&lon=-1.5",
+      "resource": "point",
+      "file": "point_ouagadougou.json"
+    },
+    {
+      "method": "GET",
+      "path": "/api/point?lat=14.7&lon=-17.4",
+      "resource": "point",
+      "file": "point_dakar.json"
+    },
+    {
+      "method": "GET",
+      "path": "/api/alerts",
+      "resource": "alerts",
+      "file": "alerts.json"
+    }
+  ]
+}

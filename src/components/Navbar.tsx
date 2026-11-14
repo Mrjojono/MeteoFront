@@ -1,5 +1,5 @@
 import {NavLink} from 'react-router-dom';
-import {BarChart3, History, LayoutDashboard, Clock, MapPin} from 'lucide-react';
+import {LayoutDashboard, Clock, MapPin} from 'lucide-react';
 import {useState, useEffect} from 'react';
 
 const Navbar = () => {
@@ -27,7 +27,6 @@ const Navbar = () => {
     */}
     const navList = [
         {to: "/", label: "Dashboard", icon: <LayoutDashboard size={20}/>},
-
         {to: "/map", label: "Terrain", icon: <MapPin size={20}/>},
     ];
 

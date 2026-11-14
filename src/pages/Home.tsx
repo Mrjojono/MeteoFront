@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react';
-import {ArrowUp, ArrowDown, ArrowRight, MapPin} from 'lucide-react';
+import {ArrowUp, ArrowDown, ArrowRight} from 'lucide-react';
 
 const Home = () => {
 
