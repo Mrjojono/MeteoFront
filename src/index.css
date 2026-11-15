@@ -10,6 +10,23 @@
   font-family: inherit;
 }
 
+.guide-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #7aa3b5 transparent;
+}
+
+.guide-scroll::selection,
+.guide-scroll ::selection {
+  background: #154a7a;
+  color: #fff;
+}
+
+.leaflet-container.is-selecting,
+.leaflet-container.is-selecting .leaflet-grab,
+.leaflet-container.is-selecting .leaflet-interactive {
+  cursor: crosshair;
+}
+
 .rain-grid-overlay {
   image-rendering: auto;
   pointer-events: none;

@@ -21,6 +21,53 @@ export function sampleGrid(
   return values[j * grid.nx + i] ?? null;
 }
 
+export type ZoneSummary = {
+  south: number;
+  north: number;
+  west: number;
+  east: number;
+  valid: number;
+  mean: number | null;
+  min: number | null;
+  max: number | null;
+};
+
+export function summarizeZone(
+  grid: GridSpec,
+  values: (number | null)[],
+  box: { south: number; north: number; west: number; east: number },
+): ZoneSummary {
+  const south = Math.min(box.south, box.north);
+  const north = Math.max(box.south, box.north);
+  const west = Math.min(box.west, box.east);
+  const east = Math.max(box.west, box.east);
+  const i0 = Math.max(0, Math.floor((west - grid.lon.start) / grid.lon.step));
+  const i1 = Math.min(grid.nx - 1, Math.ceil((east - grid.lon.start) / grid.lon.step));
+  const j0 = Math.max(0, Math.floor((south - grid.lat.start) / grid.lat.step));
+  const j1 = Math.min(grid.ny - 1, Math.ceil((north - grid.lat.start) / grid.lat.step));
+  const found: number[] = [];
+  for (let j = j0; j <= j1; j += 1) {
+    for (let i = i0; i <= i1; i += 1) {
+      const value = values[j * grid.nx + i];
+      if (value != null && !Number.isNaN(value)) found.push(value);
+    }
+  }
+  if (found.length === 0) {
+    return { south, north, west, east, valid: 0, mean: null, min: null, max: null };
+  }
+  const sum = found.reduce((total, value) => total + value, 0);
+  return {
+    south,
+    north,
+    west,
+    east,
+    valid: found.length,
+    mean: sum / found.length,
+    min: Math.min(...found),
+    max: Math.max(...found),
+  };
+}
+
 function cellAt(
   values: (number | null)[],
   nx: number,

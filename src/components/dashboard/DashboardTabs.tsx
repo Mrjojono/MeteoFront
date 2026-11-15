@@ -16,7 +16,7 @@ type Props = {
 
 export default function DashboardTabs({ screen, onChange }: Props) {
   return (
-    <nav className="flex items-center gap-0.5 rounded-full bg-[#154a7a] px-1.5 py-1 text-white">
+    <nav className="flex max-w-full items-center gap-0.5 overflow-x-auto rounded-full bg-[#154a7a] px-1.5 py-1 text-white">
       <span className="mr-1 flex size-9 items-center justify-center rounded-full bg-white/15">
         <CloudRain size={18} />
       </span>
