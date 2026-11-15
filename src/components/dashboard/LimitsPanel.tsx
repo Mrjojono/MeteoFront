@@ -1,6 +1,7 @@
-import { datasetMeta } from "@/data/mockApi";
+import { getMeta } from "@/data/mockApi";
 
 export default function LimitsPanel() {
+  const meta = getMeta();
   return (
     <div className="h-full overflow-auto bg-white px-6 pt-20 pb-6">
       <h2 className="text-xl font-semibold text-slate-900">
@@ -46,7 +47,7 @@ export default function LimitsPanel() {
           Données affichées
         </h3>
         <ul className="list-disc space-y-2 pl-5 text-sm leading-relaxed text-slate-700">
-          {datasetMeta.sources.map((source) => (
+          {meta?.sources.map((source) => (
             <li key={source.id}>
               {source.label}
               {source.attribution ? ` — ${source.attribution}` : ""}

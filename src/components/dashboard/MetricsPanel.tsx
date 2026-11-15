@@ -6,7 +6,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { modelMetrics } from "@/data/mockApi";
+import { getMetrics } from "@/data/mockApi";
 
 function fmt(value: number | null, digits = 2) {
   if (value == null) return "—";
@@ -17,13 +17,23 @@ function fmt(value: number | null, digits = 2) {
 }
 
 export default function MetricsPanel() {
+  const metrics = getMetrics();
+
+  if (!metrics) {
+    return (
+      <div className="flex h-full items-center justify-center bg-white pt-20 text-sm text-slate-400">
+        Chargement des métriques…
+      </div>
+    );
+  }
+
   return (
     <div className="h-full overflow-auto bg-white px-6 pt-20 pb-6">
       <h2 className="text-xl font-semibold text-slate-900">
         Comparaison des modèles
       </h2>
-      <p className="mt-1 max-w-3xl text-sm text-slate-500">{modelMetrics.note}</p>
-      <p className="mt-2 text-xs text-slate-400">Cible : {modelMetrics.target}</p>
+      <p className="mt-1 max-w-3xl text-sm text-slate-500">{metrics.note}</p>
+      <p className="mt-2 text-xs text-slate-400">Cible : {metrics.target}</p>
 
       <div className="mt-6 rounded-xl border border-slate-200">
         <Table>
@@ -40,7 +50,7 @@ export default function MetricsPanel() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {modelMetrics.models.map((row) => {
+            {metrics.models.map((row) => {
               const skill = row.skill_vs_climatology;
               const beatsClim = skill != null && skill > 0;
               return (
@@ -76,7 +86,7 @@ export default function MetricsPanel() {
       </div>
 
       <ul className="mt-6 space-y-3">
-        {modelMetrics.models.map((row) => (
+        {metrics.models.map((row) => (
           <li key={`${row.id}-note`} className="text-sm text-slate-600">
             <span className="font-medium text-slate-800">{row.label} : </span>
             {row.comment}

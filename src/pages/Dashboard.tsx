@@ -8,7 +8,12 @@ import OceanSignalsPanel from "@/components/dashboard/OceanSignalsPanel";
 import RainLeafletMap from "@/components/dashboard/RainLeafletMap";
 import RainSeriesPanel from "@/components/dashboard/RainSeriesPanel";
 import {
-  alertSnapshot,
+  ensureAlerts,
+  ensureMeta,
+  ensureMetrics,
+  ensurePoints,
+  ensureSignals,
+  getAlertSnapshot,
   getLayerMeta,
   getSidebarStats,
   layersForMode,
@@ -33,12 +38,13 @@ export default function Dashboard() {
   const [values, setValues] = useState<(number | null)[] | null>(null);
   const [imageUrl, setImageUrl] = useState("");
   const [loading, setLoading] = useState(true);
+  const [dataReady, setDataReady] = useState(false);
 
   const availableLayers = layersForMode(viewMode);
   const layerMeta = getLayerMeta(layerId) ?? getLayerMeta("anomaly_mm");
   const stats = useMemo(
     () => getSidebarStats(locationId, viewMode),
-    [locationId, viewMode],
+    [locationId, viewMode, dataReady],
   );
 
   useEffect(() => {
@@ -46,6 +52,26 @@ export default function Dashboard() {
       setLayerId(availableLayers[0]);
     }
   }, [availableLayers, layerId]);
+
+  useEffect(() => {
+    let cancelled = false;
+    Promise.all([
+      ensureMeta(),
+      ensureAlerts(),
+      ensurePoints(),
+      ensureSignals(),
+      ensureMetrics(),
+    ])
+      .then(() => {
+        if (!cancelled) setDataReady(true);
+      })
+      .catch((err) => {
+        console.error("Erreur chargement meta/alerts:", err);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -91,7 +117,9 @@ export default function Dashboard() {
   }, [grid, values, layerMeta]);
 
   const handleDownload = () => {
-    const blob = new Blob([JSON.stringify(alertSnapshot, null, 2)], {
+    const snapshot = getAlertSnapshot();
+    if (!snapshot) return;
+    const blob = new Blob([JSON.stringify(snapshot, null, 2)], {
       type: "application/json",
     });
     const url = URL.createObjectURL(blob);

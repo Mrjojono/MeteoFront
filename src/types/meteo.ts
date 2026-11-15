@@ -37,34 +37,6 @@ export type GridSpec = {
   layout: string;
 };
 
-export type FramePayload = {
-  layer: LayerId;
-  unit: string;
-  grid: GridSpec;
-  frames: { time: string; values: (number | null)[] }[];
-};
-
-export type ForecastPayload = {
-  issued_at: string;
-  target: string;
-  lead_months: number;
-  grid: GridSpec;
-  layers: Record<
-    string,
-    { values: (number | null)[]; p10?: (number | null)[]; p90?: (number | null)[] }
-  >;
-  summary: {
-    region_mean_mm: number;
-    region_clim_mm: number;
-    region_anomaly_pct: number;
-    prob_wetter_than_normal: number;
-    area_wetter_pct: number;
-    area_drier_pct: number;
-  };
-  model: { id: string; label: string };
-  baseline: { id: string; label: string; rmse: number };
-};
-
 export type PointSeriesRow = {
   time: string;
   kind: "observation" | "forecast";

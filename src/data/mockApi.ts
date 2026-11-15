@@ -1,13 +1,6 @@
-import metaJson from "@/back/mock-meta.json";
-import alertsJson from "@/back/mock-alerts.json";
-import dakarJson from "@/back/mock-point_dakar.json";
-import niameyJson from "@/back/mock-point_niamey.json";
-import ouagadougouJson from "@/back/mock-point_ouagadougou.json";
-import signalsJson from "@/back/mock-signals.json";
-import metricsJson from "@/back/mock-metrics.json";
+import { fetchMeta, fetchAlerts, fetchFrames, fetchForecast, fetchPoint, fetchSignals, fetchMetrics } from "@/data/api";
+import type { Meta, Alerts, Frames, Forecast, Point, Signals, Metrics } from "@/data/api";
 import type {
-  ForecastPayload,
-  FramePayload,
   LayerId,
   LayerMeta,
   LocationId,
@@ -16,80 +9,102 @@ import type {
   ViewMode,
 } from "@/types/meteo";
 
-const meta = metaJson as {
-  dataset: { title: string; generated_at: string };
-  region: { label: string; bbox: number[] };
-  time: { default: string; available: string[] };
-  layers: LayerMeta[];
-  sources: { id: string; label: string; attribution: string }[];
+/* ── Cache meta + alerts (chargés depuis l'API, partagés via module) ── */
+
+let _meta: Meta | null = null;
+let _alerts: Alerts | null = null;
+let _metaPromise: Promise<Meta> | null = null;
+let _alertsPromise: Promise<Alerts> | null = null;
+
+export async function ensureMeta(): Promise<Meta> {
+  if (_meta) return _meta;
+  if (!_metaPromise) {
+    _metaPromise = fetchMeta().then((data) => {
+      _meta = data;
+      return data;
+    });
+  }
+  return _metaPromise;
+}
+
+export async function ensureAlerts(): Promise<Alerts> {
+  if (_alerts) return _alerts;
+  if (!_alertsPromise) {
+    _alertsPromise = fetchAlerts().then((data) => {
+      _alerts = data;
+      return data;
+    });
+  }
+  return _alertsPromise;
+}
+
+export function getMeta(): Meta | null {
+  return _meta;
+}
+
+export function getAlertSnapshot(): Alerts | null {
+  return _alerts;
+}
+
+/* ── Points (API /api/point — préchargés au démarrage) ── */
+
+const CITY_COORDS: Record<Exclude<LocationId, "world">, { lat: number; lon: number }> = {
+  dakar: { lat: 14.7, lon: -17.4 },
+  niamey: { lat: 13.5, lon: 2.1 },
+  ouagadougou: { lat: 12.4, lon: -1.5 },
 };
 
-const alerts = alertsJson as {
-  time: string;
-  severity: { level: string; label: string; score: number };
-  indicators: {
-    rain_mean_mm: number;
-    clim_mean_mm: number;
-    anomaly_pct: number;
-    anomaly_z_mean: number;
-    area_below_normal_pct: number;
-    area_deficit_severe_pct: number;
-  };
-  classes: { id: string; label: string; area_pct: number; color: string }[];
-  history: { time: string; anomaly_pct: number; level: string }[];
-};
+const _points: Partial<Record<Exclude<LocationId, "world">, Point>> = {};
+let _pointsPromise: Promise<void> | null = null;
 
-const points: Record<Exclude<LocationId, "world">, PointPayload> = {
-  dakar: dakarJson as PointPayload,
-  niamey: niameyJson as PointPayload,
-  ouagadougou: ouagadougouJson as PointPayload,
-};
+export async function ensurePoints(): Promise<void> {
+  if (_pointsPromise) return _pointsPromise;
+  const ids = Object.keys(CITY_COORDS) as Exclude<LocationId, "world">[];
+  _pointsPromise = Promise.all(
+    ids.map(async (id) => {
+      const { lat, lon } = CITY_COORDS[id];
+      _points[id] = await fetchPoint(lat, lon);
+    }),
+  ).then(() => {});
+  return _pointsPromise;
+}
 
-export const datasetMeta = meta;
-export const alertSnapshot = alerts;
+/* ── Signals + Metrics (API — étape 5) ── */
 
-export type SignalRow = {
-  time: string;
-  oni: number;
-  tna: number;
-  gog: number;
-};
+let _signals: Signals | null = null;
+let _metrics: Metrics | null = null;
+let _signalsPromise: Promise<Signals> | null = null;
+let _metricsPromise: Promise<Metrics> | null = null;
 
-export type SignalsPayload = {
-  status: string;
-  note: string;
-  units: Record<string, string>;
-  labels: Record<string, string>;
-  lags_months_literature: Record<string, number[]>;
-  series: SignalRow[];
-};
+export async function ensureSignals(): Promise<Signals> {
+  if (_signals) return _signals;
+  if (!_signalsPromise) {
+    _signalsPromise = fetchSignals().then((data) => {
+      _signals = data;
+      return data;
+    });
+  }
+  return _signalsPromise;
+}
 
-export type MetricRow = {
-  id: string;
-  label: string;
-  kind: string;
-  split: string;
-  n: number;
-  on: string;
-  rmse: number | null;
-  mae: number | null;
-  bias: number | null;
-  r2: number | null;
-  nse: number | null;
-  pbias: number | null;
-  skill_vs_climatology: number | null;
-  comment: string;
-};
+export async function ensureMetrics(): Promise<Metrics> {
+  if (_metrics) return _metrics;
+  if (!_metricsPromise) {
+    _metricsPromise = fetchMetrics().then((data) => {
+      _metrics = data;
+      return data;
+    });
+  }
+  return _metricsPromise;
+}
 
-export type MetricsPayload = {
-  status: string;
-  note: string;
-  target: string;
-  models: MetricRow[];
-};
+export function getSignals(): Signals | null {
+  return _signals;
+}
 
-export const oceanSignals = signalsJson as SignalsPayload;
-export const modelMetrics = metricsJson as MetricsPayload;
+export function getMetrics(): Metrics | null {
+  return _metrics;
+}
 
 export type SeriesChartRow = {
   time: string;
@@ -113,10 +128,22 @@ export function getSeriesChart(locationId: LocationId): {
   rows: SeriesChartRow[];
   note: string;
 } {
+  const cityIds = Object.keys(CITY_COORDS) as Exclude<LocationId, "world">[];
   const sources =
     locationId === "world"
-      ? Object.values(points)
-      : [points[locationId as Exclude<LocationId, "world">]];
+      ? cityIds.map((id) => _points[id]).filter((p): p is Point => p != null)
+      : [_points[locationId as Exclude<LocationId, "world">]].filter(
+          (p): p is Point => p != null,
+        );
+
+  if (sources.length === 0) {
+    return {
+      title: "Pluie mensuelle",
+      unit: "mm/mois",
+      rows: [],
+      note: "Chargement des données…",
+    };
+  }
 
   const byTime = new Map<string, PointSeriesRow[]>();
   for (const source of sources) {
@@ -148,13 +175,14 @@ export function getSeriesChart(locationId: LocationId): {
     rows,
     note:
       locationId === "world"
-        ? "Pas de série régionale unique dans le mock : moyenne de Dakar, Niamey et Ouagadougou. La climatologie (normale du mois) est toujours tracée."
+        ? "Moyenne de Dakar, Niamey et Ouagadougou. La climatologie (normale du mois) est toujours tracée."
         : "Observation, normale du mois, puis prévision à 1 et 3 mois avec fourchette p10–p90.",
   };
 }
 
 export function getLayerMeta(id: LayerId): LayerMeta | undefined {
-  return meta.layers.find((layer) => layer.id === id);
+  if (!_meta) return undefined;
+  return _meta.layers.find((layer) => layer.id === id) as LayerMeta | undefined;
 }
 
 export function layersForMode(mode: ViewMode): LayerId[] {
@@ -166,27 +194,15 @@ export function layersForMode(mode: ViewMode): LayerId[] {
 
 export function getPoint(id: LocationId): PointPayload | null {
   if (id === "world") return null;
-  return points[id];
+  return _points[id] ?? null;
 }
 
-export async function loadObservationFrame(layer: LayerId): Promise<FramePayload> {
-  const loaders: Record<string, () => Promise<{ default: unknown }>> = {
-    rain_mm: () => import("@/back/mock-frames_rain_mm.json"),
-    anomaly_mm: () => import("@/back/mock-frames_anomaly_mm.json"),
-    anomaly_pct: () => import("@/back/mock-frames_anomaly_pct.json"),
-    anomaly_z: () => import("@/back/mock-frames_anomaly_z.json"),
-  };
-  const loader = loaders[layer] ?? loaders.rain_mm;
-  const mod = await loader();
-  return mod.default as FramePayload;
+export async function loadObservationFrame(layer: LayerId): Promise<Frames> {
+  return fetchFrames(layer);
 }
 
-export async function loadForecast(lead: 1 | 3): Promise<ForecastPayload> {
-  const mod =
-    lead === 1
-      ? await import("@/back/mock-forecast_lead1.json")
-      : await import("@/back/mock-forecast_lead3.json");
-  return mod.default as ForecastPayload;
+export async function loadForecast(lead: 1 | 3): Promise<Forecast> {
+  return fetchForecast(lead);
 }
 
 export type SidebarBar = {
@@ -218,8 +234,19 @@ export function getSidebarStats(locationId: LocationId, mode: ViewMode): Sidebar
   const point = getPoint(locationId);
 
   if (!point) {
-    const history = alerts.history.slice(-6);
-    const observationValue = alerts.indicators.rain_mean_mm;
+    if (!_alerts) {
+      return {
+        observation: 0,
+        forecast: 0,
+        total: 0,
+        unit: "mm",
+        period: "",
+        bars: [],
+        note: "Chargement des données…",
+      };
+    }
+    const history = _alerts.history.slice(-6);
+    const observationValue = _alerts.indicators.rain_mean_mm ?? 0;
     const forecastValue = 99.6;
     const total = observationValue + 99.6 + 104.7;
     return {
@@ -229,7 +256,7 @@ export function getSidebarStats(locationId: LocationId, mode: ViewMode): Sidebar
       unit: "mm",
       period:
         mode === "observation"
-          ? alerts.time
+          ? _alerts.time
           : mode === "forecast"
             ? "1985-07-01"
             : "1985-06-01",
@@ -240,7 +267,7 @@ export function getSidebarStats(locationId: LocationId, mode: ViewMode): Sidebar
               { time: "1985-09-01", label: "09", value: 104.7, unit: "mm" },
             ]
           : mode === "observation"
-            ? alerts.classes.map((row) => ({
+            ? _alerts.classes.map((row) => ({
                 time: row.id,
                 label: row.label,
                 value: row.area_pct,
@@ -249,10 +276,10 @@ export function getSidebarStats(locationId: LocationId, mode: ViewMode): Sidebar
             : history.slice(-4).map((row) => ({
                 time: row.time,
                 label: row.time.slice(5, 7),
-                value: row.anomaly_pct,
+                value: row.anomaly_pct ?? 0,
                 unit: "%",
               })),
-      note: `Anomalie régionale ${alerts.indicators.anomaly_pct} % · ${alerts.severity.label}`,
+      note: `Anomalie régionale ${_alerts.indicators.anomaly_pct ?? "—"} % · ${_alerts.severity.label}`,
     };
   }
 
