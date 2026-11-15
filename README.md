@@ -36,11 +36,12 @@ Le projet repose sur une architecture en 4 couches :
 
 ##  Stack Technique
 
--   **Frontend** : React 18, TypeScript, Tailwind CSS.
+-   **Frontend** : React 19, TypeScript, Tailwind CSS.
 -   **Build Tool** : Vite (HMR activé).
--   **Visualisation** : Lucide React (Icônes), Recharts/Chart.js (Graphiques).
--   **Data Source** : NASA POWER API / Sensors IoT.
--   **Architecture** : Système distribué orienté flux.
+-   **Visualisation** : Lucide React (Icônes), Recharts (Graphiques), Leaflet (Carte).
+-   **Backend** : FastAPI (Python), XGBoost, prévision de pluie mensuelle Sahel.
+-   **Data Source** : CHIRPS v3.0, NOAA CPC (indices ENSO), ERSST v6.
+-   **Architecture** : API FastAPI ↔ React, proxy Vite en développement.
 
 ---
 
@@ -48,24 +49,28 @@ Le projet repose sur une architecture en 4 couches :
 
 ### Prérequis
 - [Node.js](https://nodejs.org/) (version 18 ou supérieure)
-- Un gestionnaire de paquets (npm, pnpm ou yarn)
+- Python 3.10+ avec les dépendances du backend (FastAPI, XGBoost, pandas, netCDF4)
 
 ### Étapes
-1. **Cloner le projet**
-   ```bash
-   git clone https://github.com/votre-compte/skynode-iot.git
-   cd skynode-iot
-   ```
 
-2. **Installer les dépendances**
+1. **Lancer le backend (API FastAPI)**
    ```bash
+   cd Nasa
+   .venv/Scripts/python api.py --host 127.0.0.1 --port 8000
+   ```
+   Endpoints : `/api/meta`, `/api/frames`, `/api/forecast`, `/api/point`, `/api/alerts`, `/api/signals`, `/api/metrics`.
+
+2. **Installer les dépendances frontend**
+   ```bash
+   cd MeteoFront
    npm install
    ```
 
-3. **Lancer l'application en mode développement**
+3. **Lancer le frontend en mode développement**
    ```bash
    npm run dev
    ```
+   Le proxy Vite (`vite.config.ts`) forward `/api` → `http://localhost:8000`. L'URL de base est configurable via `VITE_API_BASE_URL` dans `.env`.
 
 ---
 

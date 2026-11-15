@@ -8,7 +8,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { oceanSignals } from "@/data/mockApi";
+import { getSignals } from "@/data/mockApi";
 
 const SIGNAL_META = [
   {
@@ -35,7 +35,17 @@ const SIGNAL_META = [
 ];
 
 export default function OceanSignalsPanel() {
-  const rows = oceanSignals.series.map((row) => ({
+  const signals = getSignals();
+
+  if (!signals) {
+    return (
+      <div className="flex h-full items-center justify-center bg-white pt-20 text-sm text-slate-400">
+        Chargement des signaux océaniques…
+      </div>
+    );
+  }
+
+  const rows = signals.series.map((row) => ({
     ...row,
     label: row.time.slice(0, 7),
   }));
@@ -46,8 +56,7 @@ export default function OceanSignalsPanel() {
         Signaux océaniques
       </h2>
       <p className="mt-1 max-w-3xl text-sm text-slate-500">
-        {oceanSignals.note} L’outil affiche ces courbes pour préparer EF8 : le
-        fichier réel de M3 pourra les remplacer sans changer l’écran.
+        {signals.note}
       </p>
 
       <div className="mt-6 h-[320px]">

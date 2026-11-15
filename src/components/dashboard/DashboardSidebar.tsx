@@ -1,6 +1,6 @@
 import { ChevronLeft, Download, Layers, MapPin } from "lucide-react";
 import { LOCATIONS } from "@/data/locations";
-import { alertSnapshot, datasetMeta } from "@/data/mockApi";
+import { getAlertSnapshot, getMeta } from "@/data/mockApi";
 import { monthLabel, monthRangeLabel } from "@/lib/gridImage";
 import type { LayerId, LocationId, ViewMode } from "@/types/meteo";
 import type { SidebarStats } from "@/data/mockApi";
@@ -42,7 +42,9 @@ export default function DashboardSidebar({
 }: Props) {
   const maxBar = Math.max(...stats.bars.map((bar) => Math.abs(bar.value)), 1);
   const location = LOCATIONS.find((item) => item.id === locationId);
-  const observationTime = alertSnapshot.time;
+  const alerts = getAlertSnapshot();
+  const meta = getMeta();
+  const observationTime = alerts?.time ?? "";
   const forecastStart = "1985-07-01";
   const forecastEnd = "1985-09-01";
 
@@ -53,7 +55,7 @@ export default function DashboardSidebar({
           MeteoFront
         </p>
         <h1 className="mt-1.5 text-lg leading-tight font-semibold">
-          {datasetMeta.dataset.title}
+          {meta?.dataset.title ?? "MeteoFront"}
         </h1>
       </div>
 
@@ -167,7 +169,7 @@ export default function DashboardSidebar({
           Télécharger les données
         </button>
         <p className="mt-3 px-1 text-[11px] leading-relaxed text-white/45">
-          {location?.label} · alerte {alertSnapshot.severity.label.toLowerCase()}
+          {location?.label} · alerte {alerts?.severity.label.toLowerCase() ?? "—"}
         </p>
       </div>
     </aside>
