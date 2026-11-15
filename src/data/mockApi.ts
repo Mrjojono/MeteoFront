@@ -73,27 +73,43 @@ export async function ensurePoints(): Promise<void> {
 
 let _signals: Signals | null = null;
 let _metrics: Metrics | null = null;
-let _signalsPromise: Promise<Signals> | null = null;
-let _metricsPromise: Promise<Metrics> | null = null;
+let _signalsPromise: Promise<Signals | null> | null = null;
+let _metricsPromise: Promise<Metrics | null> | null = null;
+let _signalsMissing = false;
+let _metricsMissing = false;
 
-export async function ensureSignals(): Promise<Signals> {
+export async function ensureSignals(): Promise<Signals | null> {
   if (_signals) return _signals;
+  if (_signalsMissing) return null;
   if (!_signalsPromise) {
-    _signalsPromise = fetchSignals().then((data) => {
-      _signals = data;
-      return data;
-    });
+    _signalsPromise = fetchSignals()
+      .then((data) => {
+        _signals = data;
+        return data;
+      })
+      .catch(() => {
+        _signalsMissing = true;
+        _signalsPromise = null;
+        return null;
+      });
   }
   return _signalsPromise;
 }
 
-export async function ensureMetrics(): Promise<Metrics> {
+export async function ensureMetrics(): Promise<Metrics | null> {
   if (_metrics) return _metrics;
+  if (_metricsMissing) return null;
   if (!_metricsPromise) {
-    _metricsPromise = fetchMetrics().then((data) => {
-      _metrics = data;
-      return data;
-    });
+    _metricsPromise = fetchMetrics()
+      .then((data) => {
+        _metrics = data;
+        return data;
+      })
+      .catch(() => {
+        _metricsMissing = true;
+        _metricsPromise = null;
+        return null;
+      });
   }
   return _metricsPromise;
 }
@@ -102,8 +118,16 @@ export function getSignals(): Signals | null {
   return _signals;
 }
 
+export function signalsMissing(): boolean {
+  return _signalsMissing;
+}
+
 export function getMetrics(): Metrics | null {
   return _metrics;
+}
+
+export function metricsMissing(): boolean {
+  return _metricsMissing;
 }
 
 export type SeriesChartRow = {

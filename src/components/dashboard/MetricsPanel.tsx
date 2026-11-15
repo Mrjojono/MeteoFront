@@ -6,7 +6,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getMetrics } from "@/data/mockApi";
+import { getMetrics, metricsMissing } from "@/data/mockApi";
 
 function fmt(value: number | null, digits = 2) {
   if (value == null) return "—";
@@ -22,7 +22,9 @@ export default function MetricsPanel() {
   if (!metrics) {
     return (
       <div className="flex h-full items-center justify-center bg-white pt-20 text-sm text-slate-400">
-        Chargement des métriques…
+        {metricsMissing()
+          ? "Ce tableau n’est pas encore servi par l’API."
+          : "Chargement des métriques…"}
       </div>
     );
   }

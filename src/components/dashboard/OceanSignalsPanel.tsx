@@ -8,7 +8,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { getSignals } from "@/data/mockApi";
+import { getSignals, signalsMissing } from "@/data/mockApi";
 
 const SIGNAL_META = [
   {
@@ -40,7 +40,9 @@ export default function OceanSignalsPanel() {
   if (!signals) {
     return (
       <div className="flex h-full items-center justify-center bg-white pt-20 text-sm text-slate-400">
-        Chargement des signaux océaniques…
+        {signalsMissing()
+          ? "Ces séries ne sont pas encore servies par l’API."
+          : "Chargement des signaux océaniques…"}
       </div>
     );
   }
