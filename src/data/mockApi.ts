@@ -234,7 +234,29 @@ export type SidebarBar = {
   label: string;
   value: number;
   unit: string;
+  caption?: string;
 };
+
+const _forecasts: Partial<Record<1 | 3, Forecast>> = {};
+let _forecastsPromise: Promise<void> | null = null;
+
+export async function ensureForecasts(): Promise<void> {
+  if (_forecasts[1] && _forecasts[3]) return;
+  if (!_forecastsPromise) {
+    _forecastsPromise = Promise.all([fetchForecast(1), fetchForecast(3)]).then(([lead1, lead3]) => {
+      _forecasts[1] = lead1;
+      _forecasts[3] = lead3;
+    });
+  }
+  return _forecastsPromise;
+}
+
+export function getForecastWindow() {
+  return {
+    start: _forecasts[1]?.target ?? "1985-07-01",
+    end: _forecasts[3]?.target ?? "1985-09-01",
+  };
+}
 
 export type SidebarStats = {
   observation: number;
@@ -271,8 +293,11 @@ export function getSidebarStats(locationId: LocationId, mode: ViewMode): Sidebar
     }
     const history = _alerts.history.slice(-6);
     const observationValue = _alerts.indicators.rain_mean_mm ?? 0;
-    const forecastValue = 99.6;
-    const total = observationValue + 99.6 + 104.7;
+    const lead1 = _forecasts[1]?.summary.region_mean_mm ?? null;
+    const lead3 = _forecasts[3]?.summary.region_mean_mm ?? null;
+    const forecastValue = lead1 ?? 0;
+    const total = observationValue + (lead3 ?? 0);
+    const window = getForecastWindow();
     return {
       observation: observationValue,
       forecast: forecastValue,
@@ -282,13 +307,24 @@ export function getSidebarStats(locationId: LocationId, mode: ViewMode): Sidebar
         mode === "observation"
           ? _alerts.time
           : mode === "forecast"
-            ? "1985-07-01"
-            : "1985-06-01",
+            ? window.start
+            : _alerts.time,
       bars:
         mode === "forecast"
           ? [
-              { time: "1985-07-01", label: "07", value: 99.6, unit: "mm" },
-              { time: "1985-09-01", label: "09", value: 104.7, unit: "mm" },
+              {
+                time: window.start,
+                label: window.start.slice(5, 7),
+                value: forecastValue,
+                unit: "mm",
+              },
+              {
+                time: window.end,
+                label: "3 mois",
+                value: lead3 ?? 0,
+                unit: "mm",
+                caption: "3 mois",
+              },
             ]
           : mode === "observation"
             ? _alerts.classes.map((row) => ({
@@ -303,7 +339,10 @@ export function getSidebarStats(locationId: LocationId, mode: ViewMode): Sidebar
                 value: row.anomaly_pct ?? 0,
                 unit: "%",
               })),
-      note: `Anomalie régionale ${_alerts.indicators.anomaly_pct ?? "—"} % · ${_alerts.severity.label}`,
+      note:
+        mode === "forecast"
+          ? `Juillet : moyenne régionale du modèle à 1 mois. La barre « 3 mois » est la somme juillet–septembre (${lead3 ?? "—"} mm), pas le mois de septembre seul.`
+          : `Anomalie régionale ${_alerts.indicators.anomaly_pct ?? "—"} % · ${_alerts.severity.label}`,
     };
   }
 

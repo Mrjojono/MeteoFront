@@ -1,6 +1,6 @@
 import { ChevronLeft, Download, Layers, MapPin } from "lucide-react";
 import { LOCATIONS } from "@/data/locations";
-import { getAlertSnapshot, getMeta } from "@/data/mockApi";
+import { getAlertSnapshot, getForecastWindow, getMeta } from "@/data/mockApi";
 import { monthLabel, monthRangeLabel } from "@/lib/gridImage";
 import type { LayerId, LocationId, ViewMode } from "@/types/meteo";
 import type { SidebarStats } from "@/data/mockApi";
@@ -26,7 +26,10 @@ const LAYER_LABELS: Record<LayerId, string> = {
 };
 
 function formatNumber(value: number) {
-  return Math.round(value).toLocaleString("fr-FR");
+  return value.toLocaleString("fr-FR", {
+    maximumFractionDigits: 1,
+    minimumFractionDigits: 0,
+  });
 }
 
 export default function DashboardSidebar({
@@ -45,8 +48,9 @@ export default function DashboardSidebar({
   const alerts = getAlertSnapshot();
   const meta = getMeta();
   const observationTime = alerts?.time ?? "";
-  const forecastStart = "1985-07-01";
-  const forecastEnd = "1985-09-01";
+  const forecastWindow = getForecastWindow();
+  const forecastStart = forecastWindow.start;
+  const forecastEnd = forecastWindow.end;
 
   return (
     <aside className="flex h-full w-[280px] shrink-0 flex-col overflow-hidden bg-[#154a7a] px-5 py-5 text-white">
@@ -114,14 +118,14 @@ export default function DashboardSidebar({
           <ul className="mt-1 mb-1 space-y-1 px-2">
             {stats.bars.map((bar) => (
               <li key={bar.time} className="flex items-center gap-2 text-xs text-white/75">
-                <span className="w-8 font-medium">{monthLabel(bar.time)}</span>
+                <span className="w-14 font-medium">{bar.caption ?? monthLabel(bar.time)}</span>
                 <span className="h-1.5 flex-1 rounded-full bg-white/15">
                   <span
                     className="block h-1.5 rounded-full bg-white"
                     style={{ width: `${(Math.abs(bar.value) / maxBar) * 100}%` }}
                   />
                 </span>
-                <span className="w-10 text-right tabular-nums">{formatNumber(bar.value)}</span>
+                <span className="w-14 text-right tabular-nums">{formatNumber(bar.value)}</span>
               </li>
             ))}
           </ul>

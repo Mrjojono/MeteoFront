@@ -3,7 +3,7 @@ import { getMeta } from "@/data/mockApi";
 export default function LimitsPanel() {
   const meta = getMeta();
   return (
-    <div className="h-full overflow-auto bg-white px-6 pt-20 pb-6">
+    <div className="absolute inset-0 min-w-0 overflow-auto bg-white px-6 pt-16 pb-6">
       <h2 className="text-xl font-semibold text-slate-900">
         Limites et précautions
       </h2>

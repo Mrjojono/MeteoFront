@@ -3,12 +3,13 @@ import {
   Legend,
   Line,
   LineChart,
-  ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from "recharts";
 import { getSeriesChart } from "@/data/mockApi";
+import { yearLabel, yearTickLabels } from "@/lib/chartTicks";
+import { useChartBox } from "@/lib/useChartBox";
 import type { LocationId } from "@/types/meteo";
 
 type Props = {
@@ -18,18 +19,33 @@ type Props = {
 export default function RainSeriesPanel({ locationId }: Props) {
   const { title, unit, rows, note } = getSeriesChart(locationId);
 
-  return (
-    <div className="flex h-full flex-col overflow-auto bg-white px-6 pt-20 pb-6">
-      <h2 className="text-xl font-semibold text-slate-900">{title}</h2>
-      <p className="mt-1 max-w-3xl text-sm text-slate-500">{note}</p>
-      <p className="mt-1 text-xs text-slate-400">Unité : {unit}</p>
+  const ticks = yearTickLabels(rows.map((row) => row.label));
+  const { ref, width, height } = useChartBox();
 
-      <div className="mt-6 min-h-[360px] flex-1">
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={rows} margin={{ top: 8, right: 16, left: 0, bottom: 8 }}>
+  return (
+    <div className="absolute inset-0 flex min-w-0 flex-col overflow-hidden bg-white px-6 pt-16 pb-4">
+      <h2 className="shrink-0 text-xl font-semibold text-slate-900">{title}</h2>
+      <p className="mt-1 max-w-3xl shrink-0 text-sm text-slate-500">{note}</p>
+      <p className="mt-1 shrink-0 text-xs text-slate-400">Unité : {unit}</p>
+
+      <div ref={ref} className="mt-4 min-h-0 w-full min-w-0 flex-1">
+        {width > 0 && height > 0 && (
+          <LineChart width={width} height={height} data={rows} margin={{ top: 8, right: 12, left: 4, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-            <XAxis dataKey="label" tick={{ fontSize: 11 }} interval={5} />
-            <YAxis tick={{ fontSize: 11 }} />
+            <XAxis
+              dataKey="label"
+              ticks={ticks}
+              tickFormatter={yearLabel}
+              interval={0}
+              tick={{ fontSize: 12, fill: "#334155" }}
+              tickMargin={8}
+              height={32}
+            />
+            <YAxis
+              width={48}
+              tick={{ fontSize: 12, fill: "#334155" }}
+              tickMargin={6}
+            />
             <Tooltip
               formatter={(value, name) => [
                 value == null ? "—" : `${Number(value).toFixed(1)} mm`,
@@ -86,7 +102,7 @@ export default function RainSeriesPanel({ locationId }: Props) {
               connectNulls={false}
             />
           </LineChart>
-        </ResponsiveContainer>
+        )}
       </div>
     </div>
   );

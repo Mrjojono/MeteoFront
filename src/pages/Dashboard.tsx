@@ -10,6 +10,7 @@ import GuidePanel from "@/components/dashboard/GuidePanel";
 import RainSeriesPanel from "@/components/dashboard/RainSeriesPanel";
 import {
   ensureAlerts,
+  ensureForecasts,
   ensureMeta,
   ensureMetrics,
   ensurePoints,
@@ -60,7 +61,7 @@ const [dataReady, setDataReady] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
-    Promise.all([ensureMeta(), ensureAlerts(), ensurePoints()])
+    Promise.all([ensureMeta(), ensureAlerts(), ensurePoints(), ensureForecasts()])
       .then(() => Promise.all([ensureSignals(), ensureMetrics()]))
       .then(() => {
         if (!cancelled) setDataReady(true);

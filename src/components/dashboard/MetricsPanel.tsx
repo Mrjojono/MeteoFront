@@ -21,7 +21,7 @@ export default function MetricsPanel() {
 
   if (!metrics) {
     return (
-      <div className="flex h-full items-center justify-center bg-white pt-20 text-sm text-slate-400">
+      <div className="absolute inset-0 flex items-center justify-center bg-white px-6 pt-16 text-sm text-slate-500">
         {metricsMissing()
           ? "Ce tableau n’est pas encore servi par l’API."
           : "Chargement des métriques…"}
@@ -30,14 +30,14 @@ export default function MetricsPanel() {
   }
 
   return (
-    <div className="h-full overflow-auto bg-white px-6 pt-20 pb-6">
+    <div className="absolute inset-0 min-w-0 overflow-auto bg-white px-6 pt-16 pb-6">
       <h2 className="text-xl font-semibold text-slate-900">
         Comparaison des modèles
       </h2>
       <p className="mt-1 max-w-3xl text-sm text-slate-500">{metrics.note}</p>
       <p className="mt-2 text-xs text-slate-400">Cible : {metrics.target}</p>
 
-      <div className="mt-6 rounded-xl border border-slate-200">
+      <div className="mt-6 overflow-x-auto rounded-xl border border-slate-200">
         <Table>
           <TableHeader>
             <TableRow>

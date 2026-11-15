@@ -3,12 +3,13 @@ import {
   Legend,
   Line,
   LineChart,
-  ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from "recharts";
 import { getSignals, signalsMissing } from "@/data/mockApi";
+import { yearLabel, yearTickLabels } from "@/lib/chartTicks";
+import { useChartBox } from "@/lib/useChartBox";
 
 const SIGNAL_META = [
   {
@@ -36,10 +37,11 @@ const SIGNAL_META = [
 
 export default function OceanSignalsPanel() {
   const signals = getSignals();
+  const { ref, width, height } = useChartBox(signals != null);
 
   if (!signals) {
     return (
-      <div className="flex h-full items-center justify-center bg-white pt-20 text-sm text-slate-400">
+      <div className="absolute inset-0 flex items-center justify-center bg-white px-6 pt-16 text-sm text-slate-500">
         {signalsMissing()
           ? "Ces séries ne sont pas encore servies par l’API."
           : "Chargement des signaux océaniques…"}
@@ -51,32 +53,45 @@ export default function OceanSignalsPanel() {
     ...row,
     label: row.time.slice(0, 7),
   }));
+  const ticks = yearTickLabels(rows.map((row) => row.label));
 
   return (
-    <div className="h-full overflow-auto bg-white px-6 pt-20 pb-6">
-      <h2 className="text-xl font-semibold text-slate-900">
+    <div className="absolute inset-0 flex min-w-0 flex-col overflow-x-hidden overflow-y-auto bg-white px-6 pt-16 pb-4">
+      <h2 className="shrink-0 text-xl font-semibold text-slate-900">
         Signaux océaniques
       </h2>
-      <p className="mt-1 max-w-3xl text-sm text-slate-500">
+      <p className="mt-1 max-w-3xl shrink-0 text-sm text-slate-500">
         {signals.note}
       </p>
 
-      <div className="mt-6 h-[320px]">
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={rows} margin={{ top: 8, right: 16, left: 0, bottom: 8 }}>
+      <div ref={ref} className="mt-4 h-64 w-full min-w-0 shrink-0">
+        {width > 0 && height > 0 && (
+          <LineChart width={width} height={height} data={rows} margin={{ top: 8, right: 12, left: 4, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-            <XAxis dataKey="label" tick={{ fontSize: 11 }} interval={5} />
-            <YAxis tick={{ fontSize: 11 }} />
+            <XAxis
+              dataKey="label"
+              ticks={ticks}
+              tickFormatter={yearLabel}
+              interval={0}
+              tick={{ fontSize: 12, fill: "#334155" }}
+              tickMargin={8}
+              height={32}
+            />
+            <YAxis
+              width={40}
+              tick={{ fontSize: 12, fill: "#334155" }}
+              tickMargin={6}
+            />
             <Tooltip />
             <Legend />
             <Line type="monotone" dataKey="tna" name="TNA" stroke="#0f766e" dot={false} strokeWidth={2} />
             <Line type="monotone" dataKey="oni" name="ONI" stroke="#b45309" dot={false} strokeWidth={2} />
             <Line type="monotone" dataKey="gog" name="Golfe de Guinée" stroke="#1d4ed8" dot={false} strokeWidth={2} />
           </LineChart>
-        </ResponsiveContainer>
+        )}
       </div>
 
-      <ul className="mt-8 grid gap-4 md:grid-cols-3">
+      <ul className="mt-4 grid shrink-0 gap-3 md:grid-cols-3">
         {SIGNAL_META.map((signal) => (
           <li key={signal.key} className="rounded-xl border border-slate-200 p-4">
             <p className="text-sm font-semibold" style={{ color: signal.color }}>
